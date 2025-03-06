@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashPuppy - Document Integrity Verification</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shield-alt"></i> HashPuppy</h1>
+            <p>Secure Document Integrity Verification</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="generate">Generate Hash</button>
+            <button class="tab-btn" data-tab="verify">Verify Document</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Generate Hash Tab -->
+            <div id="generate" class="tab-pane active">
+                <div class="card">
+                    <h2>Generate Document Hash</h2>
+                    <p>Upload a document to generate its unique SHA-256 hash.</p>
+                    
+                    <div class="file-upload">
+                        <label for="generateFile" class="file-label">
+                            <i class="fas fa-upload"></i> Choose a document
+                        </label>
+                        <input type="file" id="generateFile">
+                        <p id="generateFileName" class="file-name"></p>
+                    </div>
+
+                    <button id="generateBtn" class="btn primary" disabled>
+                        <i class="fas fa-fingerprint"></i> Generate Hash
+                    </button>
+
+                    <div id="generateResult" class="result-container hidden">
+                        <h3>Generated Hash</h3>
+                        <div class="result-item">
+                            <span>File name:</span>
+                            <p id="resultFileName"></p>
+                        </div>
+                        <div class="result-item">
+                            <span>Generated at:</span>
+                            <p id="resultTimestamp"></p>
+                        </div>
+                        <div class="result-item">
+                            <span>SHA-256 Hash:</span>
+                            <div class="hash-container">
+                                <p id="resultHash"></p>
+                                <button id="copyHashBtn" class="btn small">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button id="saveJsonBtn" class="btn secondary">
+                            <i class="fas fa-save"></i> Save Hash Info
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verify Document Tab -->
+            <div id="verify" class="tab-pane">
+                <div class="card">
+                    <h2>Verify Document Integrity</h2>
+                    <p>Upload a document and provide its hash to verify integrity.</p>
+                    
+                    <div class="file-upload">
+                        <label for="verifyFile" class="file-label">
+                            <i class="fas fa-upload"></i> Choose a document
+                        </label>
+                        <input type="file" id="verifyFile">
+                        <p id="verifyFileName" class="file-name"></p>
+                    </div>
+
+                    <div class="hash-input-section">
+                        <h3>Provide Hash</h3>
+                        <div class="input-methods">
+                            <div class="input-method active" id="manualInputMethod">
+                                <label for="manualHash">Enter Hash Manually</label>
+                                <textarea id="manualHash" placeholder="Paste the SHA-256 hash here"></textarea>
+                            </div>
+                            <div class="or-divider">
+                                <span>OR</span>
+                            </div>
+                            <div class="input-method" id="fileInputMethod">
+                                <label for="hashJsonFile" class="file-label secondary">
+                                    <i class="fas fa-file-import"></i> Upload Hash JSON
+                                </label>
+                                <input type="file" id="hashJsonFile" accept=".json">
+                                <p id="hashJsonName" class="file-name"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="verifyBtn" class="btn primary" disabled>
+                        <i class="fas fa-check-circle"></i> Verify Document
+                    </button>
+
+                    <div id="verifyResult" class="result-container hidden">
+                        <div class="verify-status">
+                            <div id="matchStatus" class="status-icon">
+                                <i class="fas fa-check-circle match-icon hidden"></i>
+                                <i class="fas fa-times-circle mismatch-icon hidden"></i>
+                            </div>
+                            <h3 id="verifyStatusText">Verification Result</h3>
+                        </div>
+                        <div class="verify-details hidden" id="verifyDetails">
+                            <div class="result-item">
+                                <span>File name:</span>
+                                <p id="verifyResultFileName"></p>
+                            </div>
+                            <div class="result-item">
+                                <span>Original hash date:</span>
+                                <p id="verifyResultTimestamp"></p>
+                            </div>
+                            <div class="result-item">
+                                <span>Expected Hash:</span>
+                                <p id="expectedHash"></p>
+                            </div>
+                            <div class="result-item">
+                                <span>Calculated Hash:</span>
+                                <p id="calculatedHash"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2023 HashPuppy - Document integrity verification done securely in your browser</p>
+            <p class="disclaimer">No data is ever sent to a server. All processing happens locally in your browser.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

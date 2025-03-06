@@ -1,0 +1,363 @@
+/* Global Styles */
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4cb5ae;
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e1e4e8;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --disabled-color: #6c757d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 2.5rem;
+}
+
+header p {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+}
+
+/* Tab Navigation */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px 0;
+    border: none;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background-color: #f1f3f5;
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Tab Content */
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.card h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.card p {
+    margin-bottom: 20px;
+}
+
+/* File Upload Styles */
+.file-upload {
+    margin-bottom: 20px;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.file-label:hover {
+    background-color: var(--secondary-color);
+}
+
+.file-label.secondary {
+    background-color: var(--secondary-color);
+}
+
+.file-label.secondary:hover {
+    background-color: #124e6a;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn.primary:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn.secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn.secondary:hover {
+    background-color: #124e6a;
+}
+
+.btn.small {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+.btn:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+/* Result Container */
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #f8f9fa;
+}
+
+.result-container h3 {
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+.result-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.result-item span {
+    min-width: 150px;
+    font-weight: 600;
+}
+
+.hash-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    word-break: break-all;
+}
+
+.hash-container p {
+    margin-right: 10px;
+    margin-bottom: 0;
+    flex: 1;
+}
+
+/* Verify Section Styles */
+.hash-input-section {
+    margin: 20px 0;
+}
+
+.hash-input-section h3 {
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+.input-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-method {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.input-method label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.input-method textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    min-height: 80px;
+    font-family: monospace;
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 5px 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.or-divider span {
+    padding: 0 10px;
+    font-weight: bold;
+    color: var(--disabled-color);
+}
+
+/* Verification Results */
+.verify-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.status-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+}
+
+.match-icon {
+    color: var(--success-color);
+}
+
+.mismatch-icon {
+    color: var(--error-color);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--disabled-color);
+    font-size: 0.9rem;
+}
+
+.disclaimer {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .result-item {
+        flex-direction: column;
+    }
+    
+    .result-item span {
+        margin-bottom: 5px;
+    }
+}
+
+@media (min-width: 768px) {
+    .input-methods {
+        flex-direction: row;
+    }
+    
+    .input-method {
+        flex: 1;
+    }
+    
+    .or-divider {
+        flex-direction: column;
+        margin: 0 15px;
+    }
+    
+    .or-divider::before,
+    .or-divider::after {
+        border-bottom: none;
+        border-left: 1px solid var(--border-color);
+        height: 40px;
+    }
+} 

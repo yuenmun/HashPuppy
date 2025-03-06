@@ -8,6 +8,8 @@ const resultTimestamp = document.getElementById('resultTimestamp');
 const resultHash = document.getElementById('resultHash');
 const copyHashBtn = document.getElementById('copyHashBtn');
 const saveJsonBtn = document.getElementById('saveJsonBtn');
+const dropArea = document.getElementById('dropArea');
+const browseBtn = document.getElementById('browseBtn');
 
 // DOM Elements - Verify Tab
 const verifyFileInput = document.getElementById('verifyFile');
@@ -24,6 +26,9 @@ const verifyResultFileName = document.getElementById('verifyResultFileName');
 const verifyResultTimestamp = document.getElementById('verifyResultTimestamp');
 const expectedHash = document.getElementById('expectedHash');
 const calculatedHash = document.getElementById('calculatedHash');
+const verifyDropArea = document.getElementById('verifyDropArea');
+const verifyBrowseBtn = document.getElementById('verifyBrowseBtn');
+const uploadStampBtn = document.querySelector('.upload-stamp-btn');
 
 // Tab Navigation
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -41,6 +46,7 @@ let hashData = {
 // Initialize the application
 function init() {
     setupEventListeners();
+    setupDragAndDrop();
 }
 
 // Set up all event listeners
@@ -58,6 +64,19 @@ function setupEventListeners() {
             tabPanes.forEach(pane => pane.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
         });
+    });
+    
+    // Browse buttons
+    browseBtn.addEventListener('click', () => {
+        generateFileInput.click();
+    });
+    
+    verifyBrowseBtn.addEventListener('click', () => {
+        verifyFileInput.click();
+    });
+    
+    uploadStampBtn.addEventListener('click', () => {
+        hashJsonFile.click();
     });
     
     // Generate file upload
@@ -89,6 +108,60 @@ function setupEventListeners() {
     verifyBtn.addEventListener('click', verifyDocument);
 }
 
+// Set up drag and drop functionality
+function setupDragAndDrop() {
+    // Prevent default behavior for drag events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        verifyDropArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    // Highlight drop area when file is dragged over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+            dropArea.classList.add('active');
+        }, false);
+        
+        verifyDropArea.addEventListener(eventName, () => {
+            verifyDropArea.classList.add('active');
+        }, false);
+    });
+    
+    // Remove highlight when file leaves drop area
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+            dropArea.classList.remove('active');
+        }, false);
+        
+        verifyDropArea.addEventListener(eventName, () => {
+            verifyDropArea.classList.remove('active');
+        }, false);
+    });
+    
+    // Handle dropped files
+    dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            generateFileInput.files = files;
+            handleFileUpload({ target: { files } }, 'generate');
+        }
+    }, false);
+    
+    verifyDropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            verifyFileInput.files = files;
+            handleFileUpload({ target: { files } }, 'verify');
+        }
+    }, false);
+}
+
+// Prevent default behavior for drag events
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
 // Handle file uploads
 function handleFileUpload(event, type) {
     const file = event.target.files[0];
@@ -114,7 +187,7 @@ async function generateHash() {
     
     try {
         generateBtn.disabled = true;
-        generateBtn.textContent = 'Generating...';
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Stamp...';
         
         const fileBuffer = await readFileAsArrayBuffer(generateFileData);
         const hashBuffer = await crypto.subtle.digest('SHA-256', fileBuffer);
@@ -133,11 +206,11 @@ async function generateHash() {
         
         generateResult.classList.remove('hidden');
     } catch (error) {
-        console.error('Error generating hash:', error);
-        alert('Error generating hash. Please try again.');
+        console.error('Error generating security stamp:', error);
+        alert('Error creating security stamp. Please try again.');
     } finally {
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<i class="fas fa-fingerprint"></i> Generate Hash';
+        generateBtn.innerHTML = '<i class="fas fa-fingerprint"></i> Create Security Stamp';
     }
 }
 
@@ -165,8 +238,8 @@ function copyHashToClipboard() {
             }, 2000);
         })
         .catch(err => {
-            console.error('Failed to copy hash:', err);
-            alert('Failed to copy hash to clipboard.');
+            console.error('Failed to copy security stamp:', err);
+            alert('Failed to copy security stamp to clipboard.');
         });
 }
 
@@ -180,7 +253,7 @@ function saveHashInfoAsJson() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${hashData.fileName.split('.')[0]}_hash_${Date.now()}.json`;
+    a.download = `${hashData.fileName.split('.')[0]}_security_stamp_${Date.now()}.json`;
     document.body.appendChild(a);
     a.click();
     
@@ -209,11 +282,11 @@ function handleHashJsonUpload(event) {
                 hashData = jsonData;
                 manualHash.value = jsonData.hash;
             } else {
-                alert('Invalid hash JSON file format.');
+                alert('Invalid security stamp format.');
             }
         } catch (error) {
-            console.error('Error parsing JSON:', error);
-            alert('Error parsing JSON file. Please ensure it\'s a valid hash JSON file.');
+            console.error('Error parsing security stamp:', error);
+            alert('Error parsing security stamp file. Please ensure it\'s a valid security stamp file.');
         }
     };
     
@@ -242,7 +315,7 @@ async function verifyDocument() {
     
     try {
         verifyBtn.disabled = true;
-        verifyBtn.textContent = 'Verifying...';
+        verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
         
         const fileBuffer = await readFileAsArrayBuffer(verifyFileData);
         const hashBuffer = await crypto.subtle.digest('SHA-256', fileBuffer);
@@ -258,12 +331,18 @@ async function verifyDocument() {
         // Check if hashes match
         const isMatch = calculatedHashHex.toLowerCase() === expectedHashValue.toLowerCase();
         
-        // Update UI
+        // Update UI - always hide mismatch icon as requested
         matchStatus.querySelector('.match-icon').classList.toggle('hidden', !isMatch);
-        matchStatus.querySelector('.mismatch-icon').classList.toggle('hidden', isMatch);
+        matchStatus.querySelector('.mismatch-icon').classList.add('hidden'); // Always hide red cross
         
-        verifyStatusText.textContent = isMatch ? 'Document Verified!' : 'Verification Failed';
-        verifyStatusText.style.color = isMatch ? 'var(--success-color)' : 'var(--error-color)';
+        // Set verification status message and color
+        if (isMatch) {
+            verifyStatusText.textContent = 'Document Verified!';
+            verifyStatusText.style.color = 'var(--success-color)';
+        } else {
+            verifyStatusText.textContent = 'Verification Failed';
+            verifyStatusText.style.color = 'var(--error-color)';
+        }
         
         verifyResultFileName.textContent = verifyFileData.name;
         verifyResultTimestamp.textContent = timestampValue;

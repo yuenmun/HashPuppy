@@ -4,137 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HashPuppy - Document Integrity Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-shield-alt"></i> HashPuppy</h1>
-            <p>Secure Document Integrity Verification</p>
+            <h1>HashPuppy</h1>
+            <p class="subtitle">HashPuppy helps you prove your documents haven't been changed. We create a unique security stamp for your file, which you can later use to verify the document is exactly the same - down to the last byte. All processing happens right in your browser - your files never leave your computer.</p>
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" data-tab="generate">Generate Hash</button>
+            <button class="tab-btn active" data-tab="generate">Stamp Document</button>
             <button class="tab-btn" data-tab="verify">Verify Document</button>
         </div>
 
-        <div class="tab-content">
-            <!-- Generate Hash Tab -->
-            <div id="generate" class="tab-pane active">
-                <div class="card">
-                    <h2>Generate Document Hash</h2>
-                    <p>Upload a document to generate its unique SHA-256 hash.</p>
-                    
-                    <div class="file-upload">
-                        <label for="generateFile" class="file-label">
-                            <i class="fas fa-upload"></i> Choose a document
-                        </label>
-                        <input type="file" id="generateFile">
+        <div class="content-wrapper">
+            <div class="tab-content">
+                <!-- Generate Hash Tab -->
+                <div id="generate" class="tab-pane active">
+                    <div class="card">
+                        <h2>Create Document Security Stamp</h2>
+                        <p>Upload a document to create its unique security stamp</p>
+                        
+                        <div class="drop-area" id="dropArea">
+                            <div class="drop-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <p>Drag and drop your document here, or click to browse</p>
+                            <button class="btn btn-outline" id="browseBtn">Choose a document</button>
+                            <input type="file" id="generateFile" hidden>
+                        </div>
                         <p id="generateFileName" class="file-name"></p>
+
+                        <button id="generateBtn" class="btn primary" disabled>
+                            <i class="fas fa-fingerprint"></i> Create Security Stamp
+                        </button>
+
+                        <div id="generateResult" class="result-container hidden">
+                            <h3>Security Stamp Created</h3>
+                            <div class="result-item">
+                                <span>File name:</span>
+                                <p id="resultFileName"></p>
+                            </div>
+                            <div class="result-item">
+                                <span>Generated at:</span>
+                                <p id="resultTimestamp"></p>
+                            </div>
+                            <div class="result-item">
+                                <span>Security Stamp:</span>
+                                <div class="hash-container">
+                                    <p id="resultHash"></p>
+                                    <button id="copyHashBtn" class="btn small">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="saveJsonBtn" class="btn secondary">
+                                <i class="fas fa-save"></i> Save Security Stamp
+                            </button>
+                        </div>
                     </div>
+                </div>
 
-                    <button id="generateBtn" class="btn primary" disabled>
-                        <i class="fas fa-fingerprint"></i> Generate Hash
-                    </button>
+                <!-- Verify Document Tab -->
+                <div id="verify" class="tab-pane">
+                    <div class="card">
+                        <h2>Verify Document Integrity</h2>
+                        <p>Upload a document and provide its previously generated security stamp to verify that the document hasn't been modified.</p>
+                        
+                        <div class="drop-area" id="verifyDropArea">
+                            <div class="drop-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <p>Drag and drop your document here, or click to browse</p>
+                            <button class="btn btn-outline" id="verifyBrowseBtn">Choose a document</button>
+                            <input type="file" id="verifyFile" hidden>
+                        </div>
+                        <p id="verifyFileName" class="file-name"></p>
 
-                    <div id="generateResult" class="result-container hidden">
-                        <h3>Generated Hash</h3>
-                        <div class="result-item">
-                            <span>File name:</span>
-                            <p id="resultFileName"></p>
-                        </div>
-                        <div class="result-item">
-                            <span>Generated at:</span>
-                            <p id="resultTimestamp"></p>
-                        </div>
-                        <div class="result-item">
-                            <span>SHA-256 Hash:</span>
-                            <div class="hash-container">
-                                <p id="resultHash"></p>
-                                <button id="copyHashBtn" class="btn small">
-                                    <i class="fas fa-copy"></i>
-                                </button>
+                        <div class="hash-input-section">
+                            <h3>Provide Security Stamp</h3>
+                            <div class="input-methods">
+                                <div class="input-method active" id="manualInputMethod">
+                                    <label for="manualHash">Enter Security Stamp Manually</label>
+                                    <textarea id="manualHash" placeholder="Paste the security stamp here"></textarea>
+                                </div>
+                                <div class="or-divider">
+                                    <span>OR</span>
+                                </div>
+                                <div class="input-method" id="fileInputMethod">
+                                    <label for="hashJsonFile">Upload Security Stamp</label>
+                                    <button class="btn btn-outline upload-stamp-btn">
+                                        <i class="fas fa-file-import"></i> Upload Security Stamp
+                                    </button>
+                                    <input type="file" id="hashJsonFile" accept=".json" hidden>
+                                    <p id="hashJsonName" class="file-name"></p>
+                                </div>
                             </div>
                         </div>
-                        <button id="saveJsonBtn" class="btn secondary">
-                            <i class="fas fa-save"></i> Save Hash Info
+
+                        <button id="verifyBtn" class="btn primary" disabled>
+                            <i class="fas fa-check-circle"></i> Verify Document
                         </button>
+
+                        <div id="verifyResult" class="result-container hidden">
+                            <div class="verify-status">
+                                <div id="matchStatus" class="status-icon">
+                                    <i class="fas fa-check-circle match-icon hidden"></i>
+                                    <i class="fas fa-times-circle mismatch-icon hidden"></i>
+                                </div>
+                                <h3 id="verifyStatusText">Verification Result</h3>
+                            </div>
+                            <div class="verify-details hidden" id="verifyDetails">
+                                <div class="result-item">
+                                    <span>File name:</span>
+                                    <p id="verifyResultFileName"></p>
+                                </div>
+                                <div class="result-item">
+                                    <span>Original stamp date:</span>
+                                    <p id="verifyResultTimestamp"></p>
+                                </div>
+                                <div class="result-item">
+                                    <span>Expected stamp:</span>
+                                    <p id="expectedHash"></p>
+                                </div>
+                                <div class="result-item">
+                                    <span>Calculated stamp:</span>
+                                    <p id="calculatedHash"></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Verify Document Tab -->
-            <div id="verify" class="tab-pane">
+            <!-- How It Works Section -->
+            <div class="how-it-works">
                 <div class="card">
-                    <h2>Verify Document Integrity</h2>
-                    <p>Upload a document and provide its hash to verify integrity.</p>
-                    
-                    <div class="file-upload">
-                        <label for="verifyFile" class="file-label">
-                            <i class="fas fa-upload"></i> Choose a document
-                        </label>
-                        <input type="file" id="verifyFile">
-                        <p id="verifyFileName" class="file-name"></p>
-                    </div>
-
-                    <div class="hash-input-section">
-                        <h3>Provide Hash</h3>
-                        <div class="input-methods">
-                            <div class="input-method active" id="manualInputMethod">
-                                <label for="manualHash">Enter Hash Manually</label>
-                                <textarea id="manualHash" placeholder="Paste the SHA-256 hash here"></textarea>
-                            </div>
-                            <div class="or-divider">
-                                <span>OR</span>
-                            </div>
-                            <div class="input-method" id="fileInputMethod">
-                                <label for="hashJsonFile" class="file-label secondary">
-                                    <i class="fas fa-file-import"></i> Upload Hash JSON
-                                </label>
-                                <input type="file" id="hashJsonFile" accept=".json">
-                                <p id="hashJsonName" class="file-name"></p>
-                            </div>
+                    <h2>How It Works</h2>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Upload Document</h3>
+                            <p>Select any file to create a unique fingerprint</p>
                         </div>
                     </div>
-
-                    <button id="verifyBtn" class="btn primary" disabled>
-                        <i class="fas fa-check-circle"></i> Verify Document
-                    </button>
-
-                    <div id="verifyResult" class="result-container hidden">
-                        <div class="verify-status">
-                            <div id="matchStatus" class="status-icon">
-                                <i class="fas fa-check-circle match-icon hidden"></i>
-                                <i class="fas fa-times-circle mismatch-icon hidden"></i>
-                            </div>
-                            <h3 id="verifyStatusText">Verification Result</h3>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Generate Hash</h3>
+                            <p>We create a cryptographic hash of your document</p>
                         </div>
-                        <div class="verify-details hidden" id="verifyDetails">
-                            <div class="result-item">
-                                <span>File name:</span>
-                                <p id="verifyResultFileName"></p>
-                            </div>
-                            <div class="result-item">
-                                <span>Original hash date:</span>
-                                <p id="verifyResultTimestamp"></p>
-                            </div>
-                            <div class="result-item">
-                                <span>Expected Hash:</span>
-                                <p id="expectedHash"></p>
-                            </div>
-                            <div class="result-item">
-                                <span>Calculated Hash:</span>
-                                <p id="calculatedHash"></p>
-                            </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Save Stamp</h3>
+                            <p>Download or copy your document's unique stamp</p>
                         </div>
+                    </div>
+                    <div class="security-note">
+                        <i class="fas fa-shield-alt"></i>
+                        <p>All processing happens locally</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>&copy; 2023 HashPuppy - Document integrity verification done securely in your browser</p>
+            <p>&copy; 2025 HashPuppy - Document integrity verification done securely in your browser</p>
             <p class="disclaimer">No data is ever sent to a server. All processing happens locally in your browser.</p>
         </footer>
     </div>
